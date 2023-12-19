@@ -18,40 +18,41 @@ public class CustomerService {
     public CustomerService(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
     }
-    public List<Customer> getAllCustomer(String filterEmail){
+
+    public List<Customer> getAllCustomer(String filterEmail) {
         List<Customer> customers = new ArrayList<>();
-        if(StringUtils.hasLength(filterEmail)){
+        if (StringUtils.hasLength(filterEmail)) {
             CustomerEntity entity = this.customerRepository.findByEmail(filterEmail);
             customers.add(this.translateDbToWeb(entity));
-        }else{
+        } else {
             Iterable<CustomerEntity> entities = this.customerRepository.findAll();
-            entities.forEach(entity->{
+            entities.forEach(entity -> {
                 customers.add(this.translateDbToWeb(entity));
             });
         }
         return customers;
     }
 
-    public Customer getCustomer(long id){
+    public Customer getCustomer(long id) {
         Optional<CustomerEntity> optional = this.customerRepository.findById(id);
-        if(optional.isEmpty()){
+        if (optional.isEmpty()) {
             throw new NotFoundException("customer not found with id");
         }
         return this.translateDbToWeb(optional.get());
 
     }
 
-    public Customer createOrUpdate(Customer customer){
+    public Customer createOrUpdate(Customer customer) {
         CustomerEntity entity = this.translateWebToDb(customer);
         entity = this.customerRepository.save(entity);
         return this.translateDbToWeb(entity);
     }
 
-    public void deleteCustomer(long id){
+    public void deleteCustomer(long id) {
         this.customerRepository.deleteById(id);
     }
 
-    private CustomerEntity translateWebToDb(Customer customer){
+    private CustomerEntity translateWebToDb(Customer customer) {
         CustomerEntity entity = new CustomerEntity();
         entity.setId(customer.getCustomerId());
         entity.setFirstName(customer.getFirstName());
@@ -62,7 +63,7 @@ public class CustomerService {
         return entity;
     }
 
-    private Customer translateDbToWeb(CustomerEntity entity){
+    private Customer translateDbToWeb(CustomerEntity entity) {
         return new Customer(entity.getId(), entity.getFirstName(), entity.getLastName(), entity.getEmail(),
                 entity.getPhone(), entity.getAddress());
     }

@@ -17,7 +17,8 @@ public class VendorService {
     public VendorService(VendorRepository vendorRepository) {
         this.vendorRepository = vendorRepository;
     }
-    public List<Vendor> getVendors(){
+
+    public List<Vendor> getVendors() {
         Iterable<VendorEntity> vendorEntities = this.vendorRepository.findAll();
         List<Vendor> vendors = new ArrayList<>();
         vendorEntities.forEach(vendorEntity -> {
@@ -26,25 +27,25 @@ public class VendorService {
         return vendors;
     }
 
-    public Vendor getVendor(long id){
+    public Vendor getVendor(long id) {
         Optional<VendorEntity> optional = this.vendorRepository.findById(id);
-        if (optional.isEmpty()){
+        if (optional.isEmpty()) {
             throw new NotFoundException("vendor entity not found with id: " + id);
         }
         return this.translateDbToWeb(optional.get());
     }
 
-    public Vendor createOrUpdateVendor(Vendor vendor){
+    public Vendor createOrUpdateVendor(Vendor vendor) {
         VendorEntity entity = this.translateWebToDb(vendor);
         entity = this.vendorRepository.save(entity);
         return this.translateDbToWeb(entity);
     }
 
-    public void deleteVendor(long id){
+    public void deleteVendor(long id) {
         this.vendorRepository.deleteById(id);
     }
 
-    private Vendor translateDbToWeb(VendorEntity entity){
+    private Vendor translateDbToWeb(VendorEntity entity) {
         return new Vendor(
                 entity.getId(),
                 entity.getName(),
@@ -55,9 +56,9 @@ public class VendorService {
         );
     }
 
-    private VendorEntity translateWebToDb(Vendor vendor){
+    private VendorEntity translateWebToDb(Vendor vendor) {
         VendorEntity entity = new VendorEntity();
-        entity.setId(vendor.getVendorId()==null?0:vendor.getVendorId());
+        entity.setId(vendor.getVendorId() == null ? 0 : vendor.getVendorId());
         entity.setAddress(vendor.getAddress());
         entity.setContact(vendor.getContact());
         entity.setEmail(vendor.getEmailAddress());

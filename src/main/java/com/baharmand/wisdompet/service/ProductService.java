@@ -17,7 +17,8 @@ public class ProductService {
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
-    public List<Product> getAllProducts(){
+
+    public List<Product> getAllProducts() {
         Iterable<ProductEntity> productEntities = this.productRepository.findAll();
         List<Product> products = new ArrayList<>();
         productEntities.forEach(productEntity -> {
@@ -26,31 +27,31 @@ public class ProductService {
         return products;
     }
 
-    public Product getProduct(long id){
+    public Product getProduct(long id) {
         Optional<ProductEntity> optional = this.productRepository.findById(id);
-        if(optional.isEmpty()){
+        if (optional.isEmpty()) {
             throw new NotFoundException("product entity not found with id: " + id);
         }
         return this.translateDbToWeb(optional.get());
     }
 
-    public Product createOrUpdateProduct(Product product){
+    public Product createOrUpdateProduct(Product product) {
         ProductEntity entity = this.translateWebToDb(product);
         entity = this.productRepository.save(entity);
         return this.translateDbToWeb(entity);
     }
 
-    public void deleteProduct(long id){
+    public void deleteProduct(long id) {
         this.productRepository.deleteById(id);
     }
 
-    private Product translateDbToWeb(ProductEntity entity){
+    private Product translateDbToWeb(ProductEntity entity) {
         return new Product(entity.getId(), entity.getName(), entity.getPrice(), entity.getVendorId());
     }
 
-    private ProductEntity translateWebToDb(Product product){
+    private ProductEntity translateWebToDb(Product product) {
         ProductEntity entity = new ProductEntity();
-        entity.setId(product.getProductId()==null?0:product.getProductId());
+        entity.setId(product.getProductId() == null ? 0 : product.getProductId());
         entity.setName(product.getName());
         entity.setPrice(product.getPrice());
         entity.setVendorId(product.getVendorId());
